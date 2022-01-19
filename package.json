@@ -19,6 +19,7 @@
   "dependencies": {
     "@solana/spl-token": "^0.1.8",
     "@solana/web3.js": "^1.31.0",
+    "bs58": "^4.0.1",
     "canvas": "^2.8.0",
     "child_process": "^1.0.2",
     "express": "^4.17.2",
