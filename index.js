@@ -52,164 +52,60 @@ app.get("/mint", (req, res)=>{
 });
 
 app.get("/transct", (req, res)=>{
-  var senderTokenAddress;
-  var recipentTokenAddress;
-  findAssociatedTokenAddress(
-    new PublicKey("HPGZnjf2g1uprvTdMVusCSc3HGpc3jLguppi9QKxJ5tU"),
-    new PublicKey("DaSe2f4ijcKiAtAK7nBRt6YheodbGfDs4vPWdt7Fcbkd")
-    ).then((resp) => {
-      senderTokenAddress = resp
-      CreateAssociatedTokenAddress(
-        new PublicKey("BBPgGEg37HFuNgW8ha5XJAHj2DAmCkbp5JWbt2TEEVCT"),
-        new PublicKey("DaSe2f4ijcKiAtAK7nBRt6YheodbGfDs4vPWdt7Fcbkd")
-      ).then((resp) => {
-        recipentTokenAddress = resp
         sendNFT(senderTokenAddress,recipentTokenAddress).then(()=>{
           res.send("sa");
-        })
-      });
-    });
-  
-
-  
-     
-
-
+        });
 });
 
 
-
-
-
-/*
-
-MINT AND SEND TRANSECTION FUNCTION
-
-*/
-
-
-async function sendNFT(sender, reciever){
+        async function sendNFT(sender, reciever){
   
-  const feePayer = Keypair.fromSecretKey(
-    bs58.decode("3DdVyZuANr5en2PQymCPmoFBMsfdhjaRHqnk3ejW16zc2YN2CWjyDTAfi6oYcQHuSa5UWFH9s1Nvme6UWprmJSjH")
-  );
-  
-  // G2FAbFQPFa5qKXCetoFZQEvF9BVvCKbvUZvodpVidnoY
-  const alice = Keypair.fromSecretKey(
-    bs58.decode("2YQDdnfxiHPKu9GypLX1yXaQTQojvDSPgFkDxrUrzbtchDsZh4B27aM8dfgrfm5DcTn8MJHenKLYRMuAbFeYsuRr")
-  );
+                      const feePayer = Keypair.fromSecretKey(
+                        bs58.decode("3DdVyZuANr5en2PQymCPmoFBMsfdhjaRHqnk3ejW16zc2YN2CWjyDTAfi6oYcQHuSa5UWFH9s1Nvme6UWprmJSjH")
+                      );
+                      
+                      // G2FAbFQPFa5qKXCetoFZQEvF9BVvCKbvUZvodpVidnoY
+                      const alice = Keypair.fromSecretKey(
+                        bs58.decode("2YQDdnfxiHPKu9GypLX1yXaQTQojvDSPgFkDxrUrzbtchDsZh4B27aM8dfgrfm5DcTn8MJHenKLYRMuAbFeYsuRr")
+                      );
 
-  const mintPubkey = new PublicKey("71Av5YUY8qxvWjKYJvEk4SSwSpBjnyEjpvpKQEXM4Eo1");
+                      const mintPubkey = new PublicKey("71Av5YUY8qxvWjKYJvEk4SSwSpBjnyEjpvpKQEXM4Eo1");
 
-  // connection
-  const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+                      // connection
+                      const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
-  let ataAlice = await Token.getAssociatedTokenAddress(
-    ASSOCIATED_TOKEN_PROGRAM_ID,
-    TOKEN_PROGRAM_ID,
-    mintPubkey,
-    alice.publicKey
-  );
-
-
- let ataFeePayer = await Token.getAssociatedTokenAddress(
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-  mintPubkey,
-  feePayer.publicKey
-);
+                      let ataAlice = await Token.getAssociatedTokenAddress(
+                        ASSOCIATED_TOKEN_PROGRAM_ID,
+                        TOKEN_PROGRAM_ID,
+                        mintPubkey,
+                        alice.publicKey
+                      );
 
 
- let tx = new Transaction().add(
-    Token.createTransferCheckedInstruction(
-      TOKEN_PROGRAM_ID,
-      ataAlice,
-      mintPubkey,
-      ataFeePayer,
-      alice.publicKey,
-      [],
-      1,
-      0
-    )
-  );
-
-  console.log(await connection.sendTransaction(tx, [feePayer, alice]));
-
-}
+                    let ataFeePayer = await Token.getAssociatedTokenAddress(
+                      ASSOCIATED_TOKEN_PROGRAM_ID,
+                      TOKEN_PROGRAM_ID,
+                      mintPubkey,
+                      feePayer.publicKey
+                    );
 
 
+                    let tx = new Transaction().add(
+                        Token.createTransferCheckedInstruction(
+                          TOKEN_PROGRAM_ID,
+                          ataAlice,
+                          mintPubkey,
+                          ataFeePayer,
+                          alice.publicKey,
+                          [],
+                          1,
+                          0
+                        )
+                      );
 
-async function findAssociatedTokenAddress(
-  walletAddress = PublicKey,
-  tokenMintAddress = PublicKey
-){
-return (await PublicKey.findProgramAddress(
-[
-walletAddress.toBuffer(),
-TOKEN_PROGRAM_ID.toBuffer(),
-tokenMintAddress.toBuffer(),
-],
-SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
-))[0];
-}
+                      console.log(await connection.sendTransaction(tx, [feePayer, alice]));
 
-async function CreateAssociatedTokenAddress(
-walletAddress = PublicKey,
-tokenMintAddress = PublicKey
-){
-return (await PublicKey.createProgramAddress(
-  [
-    walletAddress.toBuffer(),
-    TOKEN_PROGRAM_ID.toBuffer(),
-    tokenMintAddress.toBuffer(),
-  ],
-SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
-));
-}
-
-
-
-
-
-
-
-
-        
-        
-        var SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new PublicKey('HPGZnjf2g1uprvTdMVusCSc3HGpc3jLguppi9QKxJ5tU');
-        
-        
-        async function findAssociatedTokenAddress(
-          walletAddress = PublicKey,
-          tokenMintAddress = PublicKey
-          ){
-            return (await PublicKey.findProgramAddress(
-              [
-                walletAddress.toBuffer(),
-                TOKEN_PROGRAM_ID.toBuffer(),
-          tokenMintAddress.toBuffer(),
-        ],
-        SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
-        ))[0];
-      }
-      
-      async function CreateAssociatedTokenAddress(
-        walletAddress = PublicKey,
-        tokenMintAddress = PublicKey
-        ){
-          return (await PublicKey.createProgramAddress(
-            [
-              walletAddress.toBuffer(),
-              TOKEN_PROGRAM_ID.toBuffer(),
-              tokenMintAddress.toBuffer(),
-            ],
-      SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
-  ));
-}
-
-
-
-
+    }
 
 
 
