@@ -99,41 +99,37 @@ async function sendNFT(sender, reciever){
     bs58.decode("2YQDdnfxiHPKu9GypLX1yXaQTQojvDSPgFkDxrUrzbtchDsZh4B27aM8dfgrfm5DcTn8MJHenKLYRMuAbFeYsuRr")
   );
 
-  const mintPubkey = new PublicKey("DaSe2f4ijcKiAtAK7nBRt6YheodbGfDs4vPWdt7Fcbkd");
+  const mintPubkey = new PublicKey("71Av5YUY8qxvWjKYJvEk4SSwSpBjnyEjpvpKQEXM4Eo1");
 
   // connection
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
-  let ata = await Token.getAssociatedTokenAddress(
+  let ataAlice = await Token.getAssociatedTokenAddress(
     ASSOCIATED_TOKEN_PROGRAM_ID,
     TOKEN_PROGRAM_ID,
     mintPubkey,
-    feePayer.publicKey
+    alice.publicKey
   );
-  console.log(`ATA: ${ata.toBase58()}`);
 
-  let tx2 = new Transaction().add(
-    Token.createAssociatedTokenAccountInstruction(
-      ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
-      TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
-      mintPubkey, // mint
-      ata, // ata
-      feePayer.publicKey, // owner of token account
-      alice.publicKey // fee payer
-    )
-  );
- console.log(`txhash: ${await connection.sendTransaction(tx2, [alice])}`);
-return;
+
+ let ataFeePayer = await Token.getAssociatedTokenAddress(
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+  mintPubkey,
+  feePayer.publicKey
+);
+
+
  let tx = new Transaction().add(
     Token.createTransferCheckedInstruction(
       TOKEN_PROGRAM_ID,
-      ata,
+      ataAlice,
       mintPubkey,
-      ata2,
+      ataFeePayer,
       alice.publicKey,
       [],
-      1e8,
-      8
+      1,
+      0
     )
   );
 
