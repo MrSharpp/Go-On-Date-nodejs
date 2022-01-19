@@ -11,8 +11,20 @@ const res = require('express/lib/response');
 const {Token, AccountLayout , TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID} = require('@solana/spl-token');
 const bs58 = require("bs58");
 const { json } = require('express/lib/response');
+var bodyParser = require('body-parser')
 
 const port = 3001
+
+
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.post('/generateImage', (req, res) => {
   if(req.body.Date != null)
@@ -53,7 +65,7 @@ app.get("/mint", (req, res)=>{
 });
 
 app.get("/transct", (req, res)=>{
-        sendNFT(senderTokenAddress,recipentTokenAddress).then(()=>{
+        sendNFT().then(()=>{
           res.send("sa");
         });
 });
@@ -70,7 +82,7 @@ app.get("/transct", (req, res)=>{
                         bs58.decode("2YQDdnfxiHPKu9GypLX1yXaQTQojvDSPgFkDxrUrzbtchDsZh4B27aM8dfgrfm5DcTn8MJHenKLYRMuAbFeYsuRr")
                       );
 
-                      const mintPubkey = new PublicKey("71Av5YUY8qxvWjKYJvEk4SSwSpBjnyEjpvpKQEXM4Eo1");
+                      const mintPubkey = new PublicKey("8oW47fQVEiFTjY49FyEHciYjgyqc8s9bQwkJToMP4Tvc");
 
                       // connection
                       const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -82,6 +94,18 @@ app.get("/transct", (req, res)=>{
                         alice.publicKey
                       );
 
+                      let tx2 = new Transaction().add(
+                        Token.createAssociatedTokenAccountInstruction(
+                          ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
+                          TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
+                          mintPubkey, // mint
+                          ataAlice, // ata
+                          alice.publicKey, // owner of token account
+                          feePayer.publicKey // fee payer
+                        )
+                      );
+                     console.log(`txhash: ${await connection.sendTransaction(tx2, [alice])}`);
+
 
                     let ataFeePayer = await Token.getAssociatedTokenAddress(
                       ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -90,6 +114,18 @@ app.get("/transct", (req, res)=>{
                       feePayer.publicKey
                     );
 
+                    let tx3 = new Transaction().add(
+                      Token.createAssociatedTokenAccountInstruction(
+                        ASSOCIATED_TOKEN_PROGRAM_ID, // always ASSOCIATED_TOKEN_PROGRAM_ID
+                        TOKEN_PROGRAM_ID, // always TOKEN_PROGRAM_ID
+                        mintPubkey, // mint
+                        ataFeePayer, // ata
+                        feePayer.publicKey, // owner of token account
+                        alice.publicKey // fee payer
+                      )
+                    );
+
+                    console.log(`txhash: ${await connection.sendTransaction(tx3, [feePayer])}`);
 
                     let tx = new Transaction().add(
                         Token.createTransferCheckedInstruction(
