@@ -14,26 +14,27 @@ const { json } = require('express/lib/response');
 
 const port = 3001
 
-
-
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
+app.post('/generateImage', (req, res) => {
+  if(req.body.Date != null)
+  {
+    res.send(req.body.Date);
+  }else
+  {
+    res.send(JSON.parse({"ERROR": "Date Parameter Not Given"}));
+  }
 });
 
-app.get('/', (req, res) => {
+
+function pinFile(){
   pinFileToIPFS('c7bee0222dd6892c174e', '9da16af9414e1936cf38f5907d5b7162e2624c95f639866eb0b385920d3bc9fe').then((result)=>{
     console.log(result);
     var ipfsHashOfUploadedFile = result.data.IpfsHash;
     console.log("ips Hash of uploaded file:"+ipfsHashOfUploadedFile);
     pinJSONToIPFS('c7bee0222dd6892c174e', '9da16af9414e1936cf38f5907d5b7162e2624c95f639866eb0b385920d3bc9fe', createNFTMetaDataJson(ipfsHashOfUploadedFile, "New NFT", " ", "100", "2011", "January", "01", "Monday")).then((result)=>{
       console.log(result.data);
-      res.send("result");
     });
   });
-  
-});
+}
 
 app.get("/mint", (req, res)=>{
   exec('ts-node "C:\\Users\\Amir Alam\\metaplex\\js\\packages\\cli\\src\\cli-nft.ts" mint -e devnet -k ./devnet.json -u https://gateway.pinata.cloud/ipfs/QmQ6QSHT3jF6XrB116THxu3ue3j8Wxj1eBJCHPFKSKrXsR', (error, stdout, stderr) => {
