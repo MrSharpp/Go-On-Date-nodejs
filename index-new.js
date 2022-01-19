@@ -1,5 +1,6 @@
 const express = require ('express');
-const routes = require('./routes/index');
+const imageRoutes = require('./routes/imageRoute');
+const nftRoutes = require('./routes/nftRoute');
 var bodyParser = require('body-parser')
 const app = express();
 
@@ -11,7 +12,8 @@ app.use(function(req, res, next) {
     next();
   });
 
-app.use('/image', routes);
+app.use('/image', imageRoutes);
+app.use('/nft', nftRoutes);
 
 const listener = app.listen(process.env.PORT || 3000, () => {
     console.log('Your app is listening on port ' + listener.address().port)

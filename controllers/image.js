@@ -2,6 +2,7 @@ const {createCanvas, registerFont, loadImage } = require('canvas');
 const fs = require('fs');
 const FormData = require('form-data');
 const axios = require('axios');
+const { response } = require('express');
 
 const folder = './image/';
 
@@ -57,10 +58,62 @@ const generateImage = (req, res) => {
 
 const uploadImage = (req, res) => {
     if(!req.body.Date) return res.json({"Error": "Please specify a date"})
+    pinFileToIPFS(folder + req.body.Date + ".png").then((response) => {
+        console.log(response.data);
+        res.json({"ipfsHash": response.data.IpfsHash});
+    });
+};
+
+const createNFTMetadata = (req, res) => {
+    if(!req.body.ipfsHash) return res.json({"Error": "Please specify a image hash"})
+    if(!req.body.Date) return res.json({"Error": "Please specify a date"})
+
+    var imageUrl = "https://gateway.pinata.cloud/ipfs/"+req.body.ipfsHash;
+    imageUrl = imageUrl.replace('"','');
+    imageUrl = imageUrl.replace('"','');
+    console.log(imageUrl);
+    const dateObj = new Date(req.body.Date);
+    const month = monthNames[dateObj.getMonth()];
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const year = dateObj.getFullYear();
+    const output = day + " " + month  + " " + year;
+
+    var nftJson = `{
+        "name": "`+output+`",
+        "symbol": "GOD",
+        "description": " ",
+        "seller_fee_basis_points": "10",
+        "image": "`+imageUrl+`",
+        "attributes": [
+            {"trait_type": "Year", "value": "`+year+`"},
+            {"trait_type": "Month", "value": "`+month+`"}, 
+            {"trait_type": "Date", "value": "`+day+`"},
+            {"trait_type": "Day", "value": "`+dayNames[day%7]+`"}
+        ],
+        "properties": {
+            "creators": [{"address": "HPGZnjf2g1uprvTdMVusCSc3HGpc3jLguppi9QKxJ5tU", "share": 100}],
+            "files": [{"uri": "`+imageUrl+`", "type": "image/png"}]
+        },
+        "collection": {"name": "Go On Date", "family": "Go On Date"}
+    }
+      `;
+      fs.writeFileSync(folder + year+ day + ".json", nftJson, function(err) {
+          if(err) {
+              console.log(err);
+              return res.json({"error":err});
+          }
+      });
+      pinFileToIPFS(folder + year+day+".json").then((response) =>{
+          console.log(response.data);
+          res.json({"ipfsHash":response.data.IpfsHash});
+      });
+};
+
+async function pinFileToIPFS(filetoUpload){
     const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
     let data = new FormData();
-    data.append('file', fs.createReadStream(folder + req.body.Date + ".png"));
-    var abc = axios.post(url, data, {
+    data.append('file', fs.createReadStream(filetoUpload));
+    var response = await axios.post(url, data, {
         maxBodyLength: 'Infinity', //this is needed to prevent axios from erroring out with large files
         headers: {
             'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
@@ -68,14 +121,15 @@ const uploadImage = (req, res) => {
             pinata_secret_api_key: pinataSecret
         }
     })
-    .then(function (response) {
+    return response;
+  /*  .then(function (response) {
         console.log(response.data.IpfsHash);
       res.json({"ipfshash":response.data.IpfsHash});
     })
     .catch(function (error) {
         console.log(error);
         res.json({"error": error});
-    });
-};
+    }); */
+}
 
-module.exports = {generateImage,uploadImage};
+module.exports = {generateImage,uploadImage,createNFTMetadata};
