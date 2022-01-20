@@ -6,8 +6,8 @@ const { response } = require('express');
 
 const folder = './image/';
 
-//if(fs.existsSync(folder)) fs.rmdirSync(folder, {recursive: true});
-//fs.mkdirSync(folder, { recursive: true });
+if(fs.existsSync(folder)) fs.rmdirSync(folder, {recursive: true});
+fs.mkdirSync(folder, { recursive: true });
 
 registerFont('./fonts/JosefinSans-VariableFont_wght.ttf', {family: 'Josefin Sans'});
 const monthNames = ["January", "February", "March", "April", "May", "June",
@@ -30,7 +30,6 @@ const generateImage = (req, res) => {
     const year = dateObj.getFullYear();
     const output = day + " " + month  + " " + year;
 
-    console.clear();
     console.log("Date:"+output);
     var canvas = createCanvas(500, 500);
     var ctx = canvas.getContext("2d");
@@ -48,7 +47,7 @@ const generateImage = (req, res) => {
     const buffer = canvas.toBuffer('image/png');
    
     fs.writeFileSync(folder + year+day+".png", buffer);
-    res.json({"response": "success"});
+    res.json({"response": "success", "data": year+day});
     }catch(error){
         console.log(error);
         res.json({"response": "error"});
@@ -59,9 +58,10 @@ const generateImage = (req, res) => {
 const uploadImage = (req, res) => {
     if(!req.body.Date) return res.json({"Error": "Please specify a date"})
     pinFileToIPFS(folder + req.body.Date + ".png").then((response) => {
-        console.log(response.data);
-        res.json({"ipfsHash": response.data.IpfsHash});
-    });
+        res.json({"response":"success","data": response.data.IpfsHash});
+    }).catch((error) => res.status(400).send({
+        message: 'This is an error!'
+     }));
 };
 
 const createNFTMetadata = (req, res) => {

@@ -1,0 +1,19 @@
+{
+        "name": "12 January 2020",
+        "symbol": "GOD",
+        "description": " ",
+        "seller_fee_basis_points": "10",
+        "image": "https://gateway.pinata.cloud/ipfs/QmS9RHFUEcoLGgwi6yaW4wjHkbcTRZ4sxGzh5v33Fn3YGN",
+        "attributes": [
+            {"trait_type": "Year", "value": "2020"},
+            {"trait_type": "Month", "value": "January"}, 
+            {"trait_type": "Date", "value": "12"},
+            {"trait_type": "Day", "value": "Saturday"}
+        ],
+        "properties": {
+            "creators": [{"address": "HPGZnjf2g1uprvTdMVusCSc3HGpc3jLguppi9QKxJ5tU", "share": 100}],
+            "files": [{"uri": "https://gateway.pinata.cloud/ipfs/QmS9RHFUEcoLGgwi6yaW4wjHkbcTRZ4sxGzh5v33Fn3YGN", "type": "image/png"}]
+        },
+        "collection": {"name": "Go On Date", "family": "Go On Date"}
+    }
+      

@@ -3,6 +3,7 @@ const { getParsedNftAccountsByOwner,isValidSolanaAddress, createConnectionConfig
 const { SystemProgram , clusterApiUrl, Connection, PublicKey, Keypair, Transaction } = require('@solana/web3.js');
 const {Token, AccountLayout , TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID} = require('@solana/spl-token');
 const bs58 = require("bs58");
+require('./env')
 
 const { response } = require("express");
 
@@ -11,7 +12,7 @@ const mintImage = (req, res) => {
     if(!req.body.ipfsHash) return res.json({"error": "Please specify a hash"})
     var ipfsHash = "https://gateway.pinata.cloud/ipfs/" + req.body.ipfsHash;
     console.log(ipfsHash);
-    exec('ts-node "C:\\Users\\Amir Alam\\metaplex\\js\\packages\\cli\\src\\cli-nft.ts" mint -e devnet -k ./devnet.json -u '+ipfsHash, (error, stdout, stderr) => {
+    exec('ts-node "'+process.env.METAPLEXPATH+'" mint -e devnet -k ./devnet.json -u '+ipfsHash, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return res.json({"error":error.message});
@@ -27,8 +28,10 @@ const mintImage = (req, res) => {
 
 const getNftAddress = (req, res) => {
     if(!req.body.walletKey) return res.json({"error": "Please specify a walletKey"})
-   
-      getAllNftData(req.body.walletKey,"11 January 2020").then((response) => {
+    if(!req.body.DateAlpha) return res.json({"error": "Please specify a date alpha"})
+
+
+      getAllNftData(req.body.walletKey,req.body.DateAlpha).then((response) => {
           if(!response) res.json({"error": "NFT NOT FOUND"})
           console.log(response);
           res.json({"mintAddress":response});
