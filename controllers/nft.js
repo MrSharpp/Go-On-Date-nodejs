@@ -14,6 +14,8 @@ const mintImage = (req, res) => {
     console.log(ipfsHash);
     exec('ts-node --version', (error, stdout, stderr) => {
       console.log("::::::::::::"+stdout);
+      console.log("::::::::::::"+stderr);
+      console.log("::::::::::::"+error);
     });
     exec('ts-node "'+process.env.METAPLEXPATH+'" mint -e devnet -k ./devnet.json -u "'+ipfsHash+'"', (error, stdout, stderr) => {
         if (error) {
