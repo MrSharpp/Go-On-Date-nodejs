@@ -3,7 +3,7 @@ const { getParsedNftAccountsByOwner,isValidSolanaAddress, createConnectionConfig
 const { SystemProgram , clusterApiUrl, Connection, PublicKey, Keypair, Transaction } = require('@solana/web3.js');
 const {Token, AccountLayout , TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID} = require('@solana/spl-token');
 const bs58 = require("bs58");
-require('./env')
+require('../env')
 
 const { response } = require("express");
 
