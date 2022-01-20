@@ -11,6 +11,7 @@ const { response } = require("express");
 
 const mintImage = (req, res) => {
   shell.exec('node ---version');
+  return;
     if(!req.body.ipfsHash) return res.json({"error": "Please specify a hash"})
     var ipfsHash = "https://gateway.pinata.cloud/ipfs/" + req.body.ipfsHash;
     console.log(ipfsHash);
