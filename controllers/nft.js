@@ -12,10 +12,12 @@ const mintImage = (req, res) => {
     if(!req.body.ipfsHash) return res.json({"error": "Please specify a hash"})
     var ipfsHash = "https://gateway.pinata.cloud/ipfs/" + req.body.ipfsHash;
     console.log(ipfsHash);
-    exec('ts-node --version', (error, stdout, stderr) => {
+    exec('node --version', (error, stdout, stderr) => {
       console.log("::::::::::::"+stdout);
-      console.log("::::::::::::"+stderr);
       console.log("::::::::::::"+error);
+      console.log("::::::::::::"+stderr);
+
+
     });
     exec('ts-node "'+process.env.METAPLEXPATH+'" mint -e devnet -k ./devnet.json -u "'+ipfsHash+'"', (error, stdout, stderr) => {
         if (error) {
