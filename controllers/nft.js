@@ -13,7 +13,7 @@ const mintImage = (req, res) => {
     var ipfsHash = "https://gateway.pinata.cloud/ipfs/" + req.body.ipfsHash;
     console.log(ipfsHash);
     exec('pwd', (error, stdout, stderr) => {
-      console.log(stderr);
+      console.log(stdout);
     });
     exec('ts-node "'+process.env.METAPLEXPATH+'" mint -e devnet -k ./devnet.json -u "'+ipfsHash+'"', (error, stdout, stderr) => {
         if (error) {
