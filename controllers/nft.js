@@ -10,19 +10,10 @@ const { response } = require("express");
 
 
 const mintImage = (req, res) => {
-  shell.exec('node ---version');
-  return;
     if(!req.body.ipfsHash) return res.json({"error": "Please specify a hash"})
     var ipfsHash = "https://gateway.pinata.cloud/ipfs/" + req.body.ipfsHash;
     console.log(ipfsHash);
-    exec('node --version', (error, stdout, stderr) => {
-      console.log("::::::::::::"+stdout);
-      console.log("::::::::::::"+error);
-      console.log("::::::::::::"+stderr);
-
-
-    });
-    exec('ts-node "'+process.env.METAPLEXPATH+'" mint -e devnet -k ./devnet.json -u "'+ipfsHash+'"', (error, stdout, stderr) => {
+    exec('~/.nvm/versions/node/v17.4.0/bin/ts-node "'+process.env.METAPLEXPATH+'" mint -e devnet -k ./devnet.json -u "'+ipfsHash+'"', (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return res.json({"error":error.message});
