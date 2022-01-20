@@ -14,6 +14,10 @@ app.use(function(req, res, next) {
 
 app.use('/image', imageRoutes);
 app.use('/nft', nftRoutes);
+app.use('/', (req, res) => {
+  console.log("HEKKI");
+  res.send("HELLO");
+});
 
 const listener = app.listen(process.env.PORT || 3000, () => {
     console.log('Your app is listening on port ' + listener.address().port)
