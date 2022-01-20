@@ -3,12 +3,14 @@ const { getParsedNftAccountsByOwner,isValidSolanaAddress, createConnectionConfig
 const { SystemProgram , clusterApiUrl, Connection, PublicKey, Keypair, Transaction } = require('@solana/web3.js');
 const {Token, AccountLayout , TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID} = require('@solana/spl-token');
 const bs58 = require("bs58");
+var shell = require('shelljs');
 require('../env')
 
 const { response } = require("express");
 
 
 const mintImage = (req, res) => {
+  shell.exec('node ---version');
     if(!req.body.ipfsHash) return res.json({"error": "Please specify a hash"})
     var ipfsHash = "https://gateway.pinata.cloud/ipfs/" + req.body.ipfsHash;
     console.log(ipfsHash);
