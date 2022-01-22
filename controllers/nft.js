@@ -3,24 +3,31 @@ const { getParsedNftAccountsByOwner,isValidSolanaAddress, createConnectionConfig
 const { SystemProgram , clusterApiUrl, Connection, PublicKey, Keypair, Transaction } = require('@solana/web3.js');
 const {Token, AccountLayout , TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID} = require('@solana/spl-token');
 const bs58 = require("bs58");
-var shell = require('shelljs');
-require('../env')
+//require('../env')
 
 const { response } = require("express");
 
 
-const mintImage = (req, res) => {
+const mintImage = (req, res) =>{
+  exec("/home/ec2-user/Go-On-Date-nodejs/metaplex/js/packages/cli/src/cli-nft.ts --version", (error, stdout, stderr) => {
+    if (error) {
+        console.log(`error: ${error.message}`);
+        return res.json({"error":error.message});
+       
+    }
+    if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        return res.json(stderr);
+    }
+    return res.send(stdout);
+});
     if(!req.body.ipfsHash) return res.json({"error": "Please specify a hash"})
     var ipfsHash = "https://gateway.pinata.cloud/ipfs/" + req.body.ipfsHash;
-    console.log(ipfsHash);
+ 
 
-    exec('~/.nvm/versions/node/v17.4.0/bin/ts-node --version', (error, stdout, stderr) => {
-      console.log("::::::::::::"+stdout);
-      console.log("::::::::::::"+error);
-      console.log("::::::::::::"+stderr);
+return;
 
-    });
-    exec('~/.nvm/versions/node/v17.4.0/bin/ts-node "'+process.env.METAPLEXPATH+'" mint -e devnet -k ./devnet.json -u "'+ipfsHash+'"', (error, stdout, stderr) => {
+    exec("tsc  C:\\Users\\Amir Alam\\metaplex\\js\\packages\\cli\\src\\cli-nft.ts mint -e devnet -k ./devnet.json -u "+ipfsHash, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return res.json({"error":error.message});
