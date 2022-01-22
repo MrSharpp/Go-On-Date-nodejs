@@ -9,25 +9,12 @@ const { response } = require("express");
 
 
 const mintImage = (req, res) =>{
-  exec("ts-node --version", (error, stdout, stderr) => {
-    if (error) {
-        console.log(`error: ${error.message}`);
-        return res.json({"error":error.message});
-       
-    }
-    if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return res.json(stderr);
-    }
-    return res.send(stdout);
-});
     if(!req.body.ipfsHash) return res.json({"error": "Please specify a hash"})
     var ipfsHash = "https://gateway.pinata.cloud/ipfs/" + req.body.ipfsHash;
  
 
-return;
 
-    exec("tsc  C:\\Users\\Amir Alam\\metaplex\\js\\packages\\cli\\src\\cli-nft.ts mint -e devnet -k ./devnet.json -u "+ipfsHash, (error, stdout, stderr) => {
+    exec("ts-node  /home/ec2-user/Go-On-Date-nodejs/metaplex/js/packages/cli/src/cli-nft.ts mint -e devnet -k ./devnet.json -u "+ipfsHash, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return res.json({"error":error.message});
