@@ -9,7 +9,7 @@ const { response } = require("express");
 
 
 const mintImage = (req, res) =>{
-  exec("/home/ec2-user/Go-On-Date-nodejs/metaplex/js/packages/cli/src/cli-nft.ts --version", (error, stdout, stderr) => {
+  exec("ts-node --version", (error, stdout, stderr) => {
     if (error) {
         console.log(`error: ${error.message}`);
         return res.json({"error":error.message});
