@@ -40,7 +40,7 @@ try{
 
  var response = await axios({
     method: "post",
-    url: "http://localhost:3000/image/generateImage",
+    url: "http://3.141.201.144:3000/image/generateImage",
     data: {
       "Date": dateProvided
     }
@@ -49,7 +49,7 @@ try{
 
   var responseIpfs = await axios({
     method: "post",
-    url: "http://localhost:3000/image/uploadImage",
+    url: "http://3.141.201.144:3000/image/uploadImage",
     data: {
       "Date": FileName
     }
@@ -60,7 +60,7 @@ try{
 
   var responseMetaData = await axios({
     method: "post",
-    url: "http://localhost:3000/image/imageMetadeta",
+    url: "http://3.141.201.144:3000/image/imageMetadeta",
     data: {
       "Date": dateProvided,
       "ipfsHash": fileIpfsHash
@@ -72,7 +72,7 @@ try{
 
   var responseMintNft = await axios({
     method: "post",
-    url: "http://localhost:3000/nft/mint",
+    url: "http://3.141.201.144:3000/nft/mint",
     data: {
       "ipfsHash": responseMetaDataLink
     }
