@@ -27,6 +27,8 @@ const generateImage = (req, res) => {
     const dateObj = new Date(req.body.Date);
     const month = monthNames[dateObj.getMonth()];
     const day = String(dateObj.getDate()).padStart(2, '0');
+    let weekday = dateObj.toLocaleString('en-us', {weekday:'long'});
+
     const year = dateObj.getFullYear();
     const output = day + " " + month  + " " + year;
 
@@ -43,7 +45,7 @@ const generateImage = (req, res) => {
     ctx.fillText(output, canvas.width/2, (canvas.height/2)+10);
     ctx.font = "28px 'Josefin Sans'";
 
-    ctx.fillText(dayNames[day%7], canvas.width-100, canvas.height-48);
+    ctx.fillText(weekday, canvas.width-100, canvas.height-48);
     const buffer = canvas.toBuffer('image/png');
    
     fs.writeFileSync(folder + year+day+".png", buffer);
@@ -75,20 +77,22 @@ const createNFTMetadata = (req, res) => {
     const dateObj = new Date(req.body.Date);
     const month = monthNames[dateObj.getMonth()];
     const day = String(dateObj.getDate()).padStart(2, '0');
+    let weekday = dateObj.toLocaleString('en-us', {weekday:'long'});
     const year = dateObj.getFullYear();
+    if(day.length < 2) day = "0" + day;
     const output = day + " " + month  + " " + year;
-
+    console.log("::+"+output);
     var nftJson = `{
         "name": "`+output+`",
         "symbol": "GOD",
         "description": " ",
-        "seller_fee_basis_points": "10",
+        "seller_fee_basis_points": "100",
         "image": "`+imageUrl+`",
         "attributes": [
             {"trait_type": "Year", "value": "`+year+`"},
             {"trait_type": "Month", "value": "`+month+`"}, 
             {"trait_type": "Date", "value": "`+day+`"},
-            {"trait_type": "Day", "value": "`+dayNames[day%7]+`"}
+            {"trait_type": "Day", "value": "`+weekday+`"}
         ],
         "properties": {
             "creators": [{"address": "HPGZnjf2g1uprvTdMVusCSc3HGpc3jLguppi9QKxJ5tU", "share": 100}],

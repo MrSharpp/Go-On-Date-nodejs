@@ -2,34 +2,41 @@ const express = require('express');
 const router  = express.Router(); 
 const nftController = require('../controllers/nft'); 
 const axios = require('axios');
+const { getParsedNftAccountsByOwner,isValidSolanaAddress, createConnectionConfig,} =  require("@nfteyez/sol-rayz");
 
+
+const dateAlphaList = {"Jan": "January", "Feb": "February", "Mar": "March", "Apr": "April", "May": "May", "Jun":"June", "Jul": "July", "Aug":"August","Sep": "September", "Oct": "October", "Nov": "November", "Dec":"December"};
 
 router.post('/mint', nftController.mintImage); 
 router.post('/getNftAddress', nftController.getNftAddress); 
 router.post('/transferNFT', nftController.transferNFT); 
-router.post('/buy', (req, res) => {
-    if(!req.body.Date) return res.status(404).send({"message":"Send Date Bro"});
-
+router.post('/buy', async (req, res) => {
+    if(!req.body.Date) return res.status(403).send({"message":"Send Date Bro"});
     try{
+        var dateChunk = req.body.Date.split(" ");
+        if(dateChunk.length < 3) return console.log("DATE NOT PROVIDED WELL");
+        var monBeta = dateChunk.at(0);
+        var newDate = dateChunk.at(1) + " " + dateAlphaList[monBeta] + " " + dateChunk.at(2)
+        var ifMinted = await getAllNftData("HPGZnjf2g1uprvTdMVusCSc3HGpc3jLguppi9QKxJ5tU", newDate)
+        if(!dateAlphaList.hasOwnProperty(monBeta)) return res.json({"response": "error", "data": "date not provided in good manner"});
+        if(ifMinted != null) return res.json({"response": "success", "data": "minted"});
+
         uploadImage(req.body.Date).then(() => {
-          return res.send("DONE");
+          return res.json({"response": "success", "data": "uploaded"});
+      }).catch((error)=>{
+        return res.json({"response": "error", "data": error});
       });
     }catch(error){
-      res.send("EROR");
+        console.log(error);
+        return res.json({"response": "error", "data": "uploading error1"});
     }
   }); 
 
-const dateAlphaList = {"Jan": "January", "Feb": "Febuary", "Mar": "March", "Apr": "April", "May": "May", "Jun":"June", "Jul": "July", "Aug":"August","Sep": "September", "Oct": "October", "Nov": "November", "Dec":"December"};
 
 
 async function uploadImage(dateProvided){
-  var dateChunk = dateProvided.split(" ");
-  if(dateChunk.length < 3) return console.log("DATE NOT PROVIDED WELL");
-  var monBeta = dateChunk.at(0);
-  console.log(monBeta);
-  if(!dateAlphaList.hasOwnProperty(monBeta)) return console.log("DATE NOT a WELL");
-  var newDate = dateChunk.at(1) + " " + dateAlphaList[monBeta] + " " + dateChunk.at(2)
-  console.log(newDate);
+try{
+
 
  var response = await axios({
     method: "post",
@@ -87,6 +94,34 @@ async function uploadImage(dateProvided){
   });
 
   console.log(responseNFtAddress.data.mintAddress); */
+}catch(error){
+    return error;
+}
 } 
+
+
+async function getAllNftData(walletKey,selectedNFTName){
+    var selectedNFT = null;
+    try {
+        const connect =    createConnectionConfig("https://api.devnet.solana.com");
+        let ownerToken = walletKey;
+        const result = isValidSolanaAddress(ownerToken);
+        const nfts = await getParsedNftAccountsByOwner({
+          publicAddress: ownerToken,
+          connection: connect,
+          serialization: true,
+        });
+        nfts.forEach(element => {
+            if(element.data.name == selectedNFTName) {
+                selectedNFT = element;
+                return true;
+            }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+        return selectedNFT;
+    
+};
 
 module.exports = router;

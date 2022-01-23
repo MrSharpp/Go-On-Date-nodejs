@@ -7,6 +7,7 @@ const bs58 = require("bs58");
 
 const { response } = require("express");
 
+const dateAlphaList = {"Jan": "January", "Feb": "February", "Mar": "March", "Apr": "April", "May": "May", "Jun":"June", "Jul": "July", "Aug":"August","Sep": "September", "Oct": "October", "Nov": "November", "Dec":"December"};
 
 const mintImage = (req, res) =>{
     if(!req.body.ipfsHash) return res.json({"error": "Please specify a hash"})
@@ -14,7 +15,7 @@ const mintImage = (req, res) =>{
  
 
 
-    exec("ts-node  /home/ec2-user/Go-On-Date-nodejs/metaplex/js/packages/cli/src/cli-nft.ts mint -e devnet -k ./devnet.json -u "+ipfsHash, (error, stdout, stderr) => {
+    exec('ts-node  "C:\\Users\\Amir Alam\\metaplex\\js\\packages\\cli\\src\\cli-nft.ts" mint -e devnet -k ./devnet.json -u '+ipfsHash, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return res.json({"error":error.message});
@@ -32,11 +33,17 @@ const getNftAddress = (req, res) => {
     if(!req.body.walletKey) return res.json({"error": "Please specify a walletKey"})
     if(!req.body.DateAlpha) return res.json({"error": "Please specify a date alpha"})
 
-
-      getAllNftData(req.body.walletKey,req.body.DateAlpha).then((response) => {
-          if(!response) res.json({"error": "NFT NOT FOUND"})
+    var dateChunk = req.body.DateAlpha.split(" ");
+    if(dateChunk.length < 3) return console.log("DATE NOT PROVIDED WELL");
+    var monBeta = dateChunk.at(0);
+    var newDate = dateChunk.at(1) + " " + dateAlphaList[monBeta] + " " + dateChunk.at(2)
+      getAllNftData(req.body.walletKey,newDate).then((response) => {
+          if(!response) return res.json({"response": "error", "data": "nft not found"})
           console.log(response);
-          res.json({"mintAddress":response});
+          res.json({"response":"success", "data":response.mint});
+      }).catch((error) => {
+        console.log(error);
+        return res.json({"response": "error", "data": error});
       });
 
 };
@@ -51,6 +58,8 @@ const  transferNFT = (req, res) => {
 };
 
 async function getAllNftData(walletKey,selectedNFTName){
+  console.log("SELECTED NFT NAME:"+selectedNFTName);
+
     var selectedNFT;
     try {
         const connect =    createConnectionConfig(clusterApiUrl("devnet"));
@@ -70,7 +79,8 @@ async function getAllNftData(walletKey,selectedNFTName){
     } catch (error) {
       console.log(error);
     }
-    return selectedNFT.mint;
+    console.log(selectedNFT);
+    return selectedNFT;
 };
 
 async function senNft(mintedAddress){
