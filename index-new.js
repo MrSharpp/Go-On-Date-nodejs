@@ -2,8 +2,15 @@ const express = require ('express');
 const imageRoutes = require('./routes/imageRoute');
 const nftRoutes = require('./routes/nftRoute');
 var bodyParser = require('body-parser')
+const https = require('https');
+const fs = require('fs');
 const app = express();
 const { response } = require('express');
+const https_options = {
+//  ca: fs.readFileSync("ca_bundle.crt"),
+  key: fs.readFileSync("./privkey1.pem"),
+  cert: fs.readFileSync("./fullchain1.pem")
+ };
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -19,6 +26,6 @@ app.use('/nft', nftRoutes);
 
 
 
-const listener = app.listen(process.env.PORT || 3000, () => {
+ const listener = app.listen(process.env.PORT || 3000,"0.0.0.0" ,() => {
     console.log('Your app is listening on port ' + listener.address().port)
-})
+   })
