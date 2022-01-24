@@ -7,8 +7,8 @@ const fs = require('fs');
 const app = express();
 const { response } = require('express');
 var options = {
-  key: fs.readFileSync('./certs/server-key.pem'),
-  cert: fs.readFileSync('./certs/server-cert.pem'),
+  key: fs.readFileSync('server-key.pem'),
+  cert: fs.readFileSync('server-cert.pem'),
 };
 
 app.use(bodyParser.urlencoded({ extended: false }));
