@@ -6,8 +6,8 @@ const { response } = require('express');
 
 const folder = './image/';
 
-if(fs.existsSync(folder)) fs.rmdirSync(folder, {recursive: true});
-fs.mkdirSync(folder, { recursive: true });
+// if(fs.existsSync(folder)) fs.rmdirSync(folder, {recursive: true});
+// fs.mkdirSync(folder, { recursive: true });
 
 registerFont('./fonts/JosefinSans-VariableFont_wght.ttf', {family: 'Josefin Sans'});
 const monthNames = ["January", "February", "March", "April", "May", "June",
