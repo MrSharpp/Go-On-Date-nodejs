@@ -7,8 +7,9 @@ const fs = require('fs');
 const app = express();
 const { response } = require('express');
 var options = {
-  key: fs.readFileSync('server-key.pem'),
-  cert: fs.readFileSync('server-cert.pem'),
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem'),
+  passphrase: 'Sharp1194@#'
 };
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,7 +24,7 @@ app.use((req, res, next) => {
 app.use('/image', imageRoutes);
 app.use('/nft', nftRoutes);
 
-var port = 300;
+var port = 3001;
 var server = https.createServer(options, app).listen(port, function(){
   console.log("Express server listening on port " + port);
 });
