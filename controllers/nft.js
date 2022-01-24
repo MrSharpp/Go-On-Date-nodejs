@@ -15,7 +15,7 @@ const mintImage = (req, res) =>{
  
 
 
-    exec('ts-node  "C:\\Users\\Amir Alam\\metaplex\\js\\packages\\cli\\src\\cli-nft.ts" mint -e devnet -k ./devnet.json -u '+ipfsHash, (error, stdout, stderr) => {
+    exec('ts-node  "/home/ec2-user/Go-On-Date-nodejs/metaplex/js/packages/cli/src/cli-nft.ts" mint -e devnet -k ./devnet.json -u '+ipfsHash, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return res.json({"error":error.message});
