@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 app.use('/image', imageRoutes);
 app.use('/nft', nftRoutes);
 
-var port = 3001;
+var port = 300;
 var server = https.createServer(options, app).listen(port, function(){
   console.log("Express server listening on port " + port);
 });
