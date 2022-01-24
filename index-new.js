@@ -6,11 +6,10 @@ const https = require('https');
 const fs = require('fs');
 const app = express();
 const { response } = require('express');
-const https_options = {
-//  ca: fs.readFileSync("ca_bundle.crt"),
-  key: fs.readFileSync("./privkey1.pem"),
-  cert: fs.readFileSync("./fullchain1.pem")
- };
+var options = {
+  key: fs.readFileSync('./certs/server-key.pem'),
+  cert: fs.readFileSync('./certs/server-cert.pem'),
+};
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -25,7 +24,10 @@ app.use('/image', imageRoutes);
 app.use('/nft', nftRoutes);
 
 
+var server = https.createServer(options, app).listen(port, function(){
+  console.log("Express server listening on port " + port);
+});
 
- const listener = app.listen(process.env.PORT || 3000,"0.0.0.0" ,() => {
-    console.log('Your app is listening on port ' + listener.address().port)
-   })
+//  const listener = app.listen(process.env.PORT || 3000,"0.0.0.0" ,() => {
+//     console.log('Your app is listening on port ' + listener.address().port)
+//    })
