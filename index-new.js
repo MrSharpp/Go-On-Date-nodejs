@@ -9,7 +9,6 @@ const { response } = require('express');
 var options = {
   key: fs.readFileSync('/etc/letsencrypt/live/api.goondate.com-0001/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/api.goondate.com-0001/fullchain.pem'),
-  passphrase: 'Sharp1194@#'
 };
 
 app.use(bodyParser.urlencoded({ extended: false }));
