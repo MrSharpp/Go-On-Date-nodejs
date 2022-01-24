@@ -9,7 +9,9 @@ const folder = './image/';
 // if(fs.existsSync(folder)) fs.rmdirSync(folder, {recursive: true});
 // fs.mkdirSync(folder, { recursive: true });
 
-registerFont('./fonts/JosefinSans-VariableFont_wght.ttf', {family: 'Josefin Sans'});
+
+registerFont('../fonts/JosefinSans-VariableFont_wght.ttf', {family: 'Josefin Sans'});
+
 const monthNames = ["January", "February", "March", "April", "May", "June",
 "July", "August", "September", "October", "November", "December"];
 const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
