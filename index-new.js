@@ -7,8 +7,8 @@ const fs = require('fs');
 const app = express();
 const { response } = require('express');
 var options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/api.goondate.com-0001/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/api.goondate.com-0001/fullchain.pem'),
+  key: fs.readFileSync('/etc/letsencrypt/live/api.goondate.com-0002/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/api.goondate.com-0002/fullchain.pem'),
 };
 
 app.use(bodyParser.urlencoded({ extended: false }));
