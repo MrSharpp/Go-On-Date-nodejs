@@ -1,27 +1,32 @@
 const { exec } = require("child_process");
 const { getParsedNftAccountsByOwner,isValidSolanaAddress, createConnectionConfig,} =  require("@nfteyez/sol-rayz");
 const { SystemProgram , clusterApiUrl, Connection, PublicKey, Keypair, Transaction } = require('@solana/web3.js');
+const fs = require('fs');
 const {Token, AccountLayout , TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID} = require('@solana/spl-token');
 const bs58 = require("bs58");
-//require('../env')
 
-const { response } = require("express");
+var alreadyMintedImages = fs.readFileSync('mintedList.json');
+alreadyMintedImages = JSON.parse(alreadyMintedImages);
 
 const dateAlphaList = {"Jan": "January", "Feb": "February", "Mar": "March", "Apr": "April", "May": "May", "Jun":"June", "Jul": "July", "Aug":"August","Sep": "September", "Oct": "October", "Nov": "November", "Dec":"December"};
 
 const mintImage = (req, res) =>{
     if(!req.body.ipfsHash) return res.json({"error": "Please specify a hash"})
+    if(!req.body.Date) return res.json({"error": "Please specify a date"})
+
     var ipfsHash = "https://gateway.pinata.cloud/ipfs/" + req.body.ipfsHash;
     
-    exec('ts-node  "/home/ec2-user/Go-On-Date-nodejs/metaplex/js/packages/cli/src/cli-nft.ts" mint -e devnet -k ./devnet.json -u '+ipfsHash, (error, stdout, stderr) => {
+    exec('ts-node  "/home/ec2-user/Go-On-Date-nodejs/metaplex/js/packages/cli/src/cli-nft.ts" mint -e mainnet-beta -k ./devnet.json -u '+ipfsHash, (error, stdout, stderr) => {
         if (error) {
             console.log(`error: ${error.message}`);
             return res.json({"error":error.message});
            
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return res.json(stderr);
+        }else{
+          let newMint = {
+            "Date": req.body.Date
+          } 
+          alreadyMintedImages.push(newMint);
+          fs.writeFileSync("mintedList.json", JSON.stringify(alreadyMintedImages));
         }
         return res.send(stdout);
     });
@@ -60,7 +65,7 @@ async function getAllNftData(walletKey,selectedNFTName){
 
     var selectedNFT;
     try {
-        const connect =    createConnectionConfig(clusterApiUrl("devnet"));
+        const connect =    createConnectionConfig(clusterApiUrl("mainnet-beta"));
         let ownerToken = walletKey;
         const result = isValidSolanaAddress(ownerToken);
         const nfts = await getParsedNftAccountsByOwner({
@@ -94,7 +99,7 @@ async function senNft(mintedAddress){
     
           const mintPubkey = new PublicKey("A8SJfwzKJAaMrY6Lb9FxZCfmVMVLcjKvRuzAiNiU6of5");
           // connection
-          const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+          const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
     
           let ataAlice = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -157,4 +162,10 @@ async function senNft(mintedAddress){
     
 }
 
-module.exports = {mintImage, getNftAddress,transferNFT};
+const soldNft = (req, res) => {
+  if(!req.body.Date) return res.json({"error": "Please specify a mintedAddress"})
+
+    res.json("HEllo");
+}
+
+module.exports = {mintImage, getNftAddress,transferNFT, soldNft};

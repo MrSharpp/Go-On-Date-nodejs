@@ -10,6 +10,7 @@ const dateAlphaList = {"Jan": "January", "Feb": "February", "Mar": "March", "Apr
 router.post('/mint', nftController.mintImage); 
 router.post('/getNftAddress', nftController.getNftAddress); 
 router.post('/transferNFT', nftController.transferNFT); 
+router.post('/nftSold', nftController.soldNft);
 router.post('/buy', async (req, res) => {
     if(!req.body.Date) return res.status(403).send({"message":"Send Date Bro"});
     try{
@@ -74,7 +75,8 @@ try{
     method: "post",
     url: "https://api.goondate.com:3001/nft/mint",
     data: {
-      "ipfsHash": responseMetaDataLink
+      "ipfsHash": responseMetaDataLink,
+      "Date": dateProvided
     }
   }).catch((error) => { 
     console.log("ERROR WHILE UPLOADING FILE:"+error.data);

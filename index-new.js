@@ -24,10 +24,10 @@ app.use('/image', imageRoutes);
 app.use('/nft', nftRoutes);
 
 var port = 3001;
-var server = https.createServer(options, app).listen(port, function(){
-  console.log("Express server listening on port " + port);
-});
+// var server = https.createServer(options, app).listen(port, function(){
+//   console.log("Express server listening on port " + port);
+// });
 
-//  const listener = app.listen(process.env.PORT || 3000,"0.0.0.0" ,() => {
-//     console.log('Your app is listening on port ' + listener.address().port)
-//    })
+ const listener = app.listen(port ,() => {
+    console.log('Your app is listening on port ' + listener.address().port)
+   })
