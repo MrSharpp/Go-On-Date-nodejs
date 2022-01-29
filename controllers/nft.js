@@ -33,8 +33,8 @@ const mintImage = (req, res) =>{
 };
 
 const getNftAddress = (req, res) => {
+  if(!req.body.DateAlpha) return res.json({"error": "Please specify a date alpha"})
     if(!req.body.walletKey) return res.json({"error": "Please specify a walletKey"})
-    if(!req.body.DateAlpha) return res.json({"error": "Please specify a date alpha"})
 
     var dateChunk = req.body.DateAlpha.split(" ");
     if(dateChunk.length < 3) return console.log("DATE NOT PROVIDED WELL");

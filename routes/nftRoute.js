@@ -105,7 +105,7 @@ try{
 async function getAllNftData(walletKey,selectedNFTName){
     var selectedNFT = null;
     try {
-        const connect =    createConnectionConfig("https://api.devnet.solana.com");
+        const connect =    createConnectionConfig("https://solana-mainnet.phantom.tech");
         let ownerToken = walletKey;
         const result = isValidSolanaAddress(ownerToken);
         const nfts = await getParsedNftAccountsByOwner({
