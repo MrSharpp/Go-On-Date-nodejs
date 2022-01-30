@@ -168,4 +168,9 @@ const soldNft = (req, res) => {
     res.json("HEllo");
 }
 
-module.exports = {mintImage, getNftAddress,transferNFT, soldNft};
+const mintedList = (req, res) => {
+  var mintedList = fs.readFileSync('mintedList.json')
+    res.json(JSON.parse(mintedList));
+}
+
+module.exports = {mintImage, getNftAddress,transferNFT, soldNft, mintedList};
