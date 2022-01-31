@@ -12,6 +12,7 @@ router.post('/getNftAddress', nftController.getNftAddress);
 router.post('/transferNFT', nftController.transferNFT);
 router.post('/mintedList', nftController.mintedList);  
 router.post('/nftSold', nftController.soldNft);
+router.post('/soldList', nftController.soldList);
 router.post('/buy', async (req, res) => {
     if(!req.body.Date) return res.status(403).send({"message":"Send Date Bro"});
     try{

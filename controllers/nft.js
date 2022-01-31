@@ -163,8 +163,10 @@ async function senNft(mintedAddress){
 }
 
 const soldNft = (req, res) => {
-  if(!req.body.Date) return res.json({"error": "Please specify a mintedAddress"})
-
+  if(!req.body.Date) return res.json({"error": "Please specify a date"})
+    var soldList = JSON.parse(fs.readFileSync('soldNft.json'))
+    soldList.push({"Date": req.body.Date})
+    fs.writeFileSync("soldNft.json", JSON.stringify(soldList));
     res.json("HEllo");
 }
 
@@ -173,4 +175,9 @@ const mintedList = (req, res) => {
     res.json(JSON.parse(mintedList));
 }
 
-module.exports = {mintImage, getNftAddress,transferNFT, soldNft, mintedList};
+const soldList = (req, res) => {
+  var mintedList = fs.readFileSync('soldNft.json')
+    res.json(JSON.parse(mintedList));
+}
+
+module.exports = {mintImage, getNftAddress,transferNFT, soldNft, mintedList, soldList};
