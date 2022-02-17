@@ -165,7 +165,7 @@ async function senNft(mintedAddress){
 const soldNft = (req, res) => {
   if(!req.body.Date) return res.json({"error": "Please specify a date"})
     var soldList = JSON.parse(fs.readFileSync('soldNft.json'))
-    soldList.push({"Date": req.body.Date})
+    soldList.push({"Date": req.body.Date, "Signature": req.body.Signature, "TransactionDate": Date.now()})
     fs.writeFileSync("soldNft.json", JSON.stringify(soldList));
     res.json("HEllo");
 }
